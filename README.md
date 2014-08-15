@@ -29,8 +29,10 @@ Add the target with a url & fields to post
           <field name="msg" layout="${message}" />
           <field name="src" layout="${logger}" />
           <field name="lvl" layout="${level}" />
-          <field name="exception" />
-          <field name="properties"/>
+          <field name="exception" />                <!--The actual exception object serialized to json-->
+          <field name="properties" /> 
+          <field name="keyprop" property="a key"/>  <!--A value in the properties bag under key 'a key'-->
+          <field name="another" property="5"/>  
         </target>
     </targets>
 
@@ -51,6 +53,7 @@ Examples
 
     var le = new LogEventInfo();
     le.Level = LogLevel.Info;
+    le.TimeStamp = DateTime.UtcNow;
     le.Message = "Hello, Json";
     le.Properties["a key"] = "a value";
     le.Properties[5] = 10;
@@ -67,9 +70,18 @@ Examples
         "properties" : { 
             "a key" : "a value",
             "5" : 10,
-        }
+        },
+        "keyprop" : "a key",
+        "another" : 10
     }
 
+
+Changes
+-------
+
+v1.0 Initial Release
+
+v1.1 Added 'property' to log field
 
 License
 --------

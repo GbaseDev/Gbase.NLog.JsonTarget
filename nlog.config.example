@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      throwExceptions="true">
 
   <extensions>
     <add assembly="Gbase.NLog.JsonTarget" />
@@ -20,8 +21,8 @@
       <field name="msg" layout="${message}" />
       <field name="src" layout="${logger}" />
       <field name="lvl" layout="${level}" />
-      <field name="exception" />
-      <field name="properties"/>
+      <field name="exception" />                <!--The actual exception object serialized to json-->
+      <field name="keyprop" property="a key"/>  <!--A value in the properties bag under key 'a key'-->
     </target>
   </targets>
 

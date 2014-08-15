@@ -127,13 +127,20 @@ namespace Gbase.NLog.JsonTarget
 
             foreach (var field in Fields)
             {
+                // We either use a layout
                 if (field.Layout != null)
                 {
                     doc[field.Name] = field.Layout.Render(logEvent);
                 }
+                // A property from 'properties'
+                else if (field.Property != null)
+                {
+                    doc[field.Name] = GetEventPropertyValue(logEvent, field.Property);
+                }
+                // Or a lookup based on the field name
                 else
                 {
-                    doc[field.Name] = GetEventPropertyValue(logEvent, field.Name);
+                    doc[field.Name] = GetEventFieldValue(logEvent, field.Name);
                 }
             }
 
@@ -158,10 +165,32 @@ namespace Gbase.NLog.JsonTarget
 
         #region Field Lookups
 
+        /// <summary>
+        /// Lookup an entry in the log event's 'properties' bag, nulls are ok
+        /// </summary>
+        /// <param name="logEvent"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public static object GetEventPropertyValue(LogEventInfo logEvent, string propertyName)
         {
+            object result;
+
+            logEvent.Properties.TryGetValue(propertyName, out result);
+                
+            return result;
+        }
+
+        /// <summary>
+        /// Lookup a value based on common properties of the logevent, 
+        /// a non-null property in the prop bag, or reflection
+        /// </summary>
+        /// <param name="logEvent"></param>
+        /// <param name="fieldName"></param>
+        /// <returns></returns>
+        public static object GetEventFieldValue(LogEventInfo logEvent, string fieldName)
+        {
             // First try standard properties
-            switch (propertyName.ToLower())
+            switch (fieldName.ToLower())
             {
                 case "exception":
                     return logEvent.Exception;
@@ -188,20 +217,20 @@ namespace Gbase.NLog.JsonTarget
             }
 
             // Then try the properties dictionary 
-            object result;
+            var result = GetEventPropertyValue(logEvent, fieldName);
 
-            if (logEvent.Properties.TryGetValue(propertyName, out result))
+            if (result != null)
                 return result;
 
             // Finally try public properties through reflection (uhg)
             var property = typeof (LogEventInfo).GetProperty(
-                propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                fieldName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
             if (property != null)
                 return property.GetValue(logEvent, BindingFlags.Public, null, null, null);
 
 
-            throw new NLogConfigurationException("Property '" + propertyName + "' not present in log event");
+            throw new NLogConfigurationException("Property '" + fieldName + "' not present in log event");
         }
 
         private static IDictionary<string, object> ConvertToNameAndValue(

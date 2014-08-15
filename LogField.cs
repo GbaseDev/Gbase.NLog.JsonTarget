@@ -41,5 +41,7 @@ namespace Gbase.NLog.JsonTarget
         public string Name { get; set; }
 
         public Layout Layout { get; set; }
+
+        public string Property { get; set; }
     }
 }
