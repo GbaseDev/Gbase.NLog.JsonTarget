@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -46,6 +47,8 @@ namespace Gbase.NLog.JsonTarget
         {
             if (_httpClient == null)
                 return;
+          
+            Debug.WriteLine("Disposing..");
 
             _httpClient.Dispose();
             _httpClient = null;
@@ -63,16 +66,25 @@ namespace Gbase.NLog.JsonTarget
 
             try
             {
-                Interlocked.Increment(ref ActivePosts);
+                
+                var posts = Interlocked.Increment(ref ActivePosts);
 
-                var response = await _httpClient.PostAsync(uri, content).WithTimeout(_httpClient.Timeout);
+                Debug.WriteLine("JsonPoster posting ({0})...", posts);
+
+                var response = await _httpClient.PostAsync(uri, content);//.WithTimeout(_httpClient.Timeout);
 
                 if (ThrowExceptionsOnFailedPost)
                     response.EnsureSuccessStatusCode();
             }
+            catch (TaskCanceledException cancelledEx)
+            {
+                Debug.WriteLine("Task #{0} cancelled..", cancelledEx.Task.Id);
+            }
             finally
             {
-                Interlocked.Decrement(ref ActivePosts);
+                var posts = Interlocked.Decrement(ref ActivePosts);
+
+                Debug.WriteLine("JsonPoster completed ({0})...", posts);
             }
         }
     }

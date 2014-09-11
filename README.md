@@ -79,9 +79,11 @@ Examples
 Changes
 -------
 
-v1.0 Initial Release
+v1.0.0 Initial Release
 
-v1.1 Added 'property' to log field
+v1.0.1 Added 'property' to log field
+
+v1.0.2 Added 'logger' to field lookup (logger name)
 
 License
 --------

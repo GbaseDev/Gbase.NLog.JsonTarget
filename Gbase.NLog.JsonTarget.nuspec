@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Gbase.NLog.JsonTarget</id>
+        <version>1.0.3</version>
+        <title>Gbase.NLog.JsonTarget</title>
+        <authors>James White</authors>
+        <owners>James White</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <copyright>Copyright ©  2014</copyright>
+        <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+        <projectUrl>https://github.com/jakenuts/Gbase.NLog.JsonTarget</projectUrl>
+        <description>
+        Gbase.NLog.JsonTarget
+        =====================
+
+        A NLog target that posts Json to a http endpoint
+
+        Dependencies
+        ------------
+
+        Currently using ServiceStack.Text for serialization and HttpClient to post asynchronously.
+
+        Usage
+        -----
+
+        Visit the GitHub project site for usage, examples &amp; source!
+
+        https://github.com/jakenuts/Gbase.NLog.JsonTarget
+
+        Released under MIT License. Enjoy!
+      </description>
+      <summary>An NLog target that posts Json to an Http endpoint.</summary>
+      <language />
+      <tags>nlog,json</tags>
+    </metadata>
+</package>

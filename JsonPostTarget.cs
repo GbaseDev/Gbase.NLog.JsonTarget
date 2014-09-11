@@ -58,6 +58,7 @@ namespace Gbase.NLog.JsonTarget
 
         protected override void CloseTarget()
         {
+            
             try
             {
                 _poster.Dispose();
@@ -115,6 +116,8 @@ namespace Gbase.NLog.JsonTarget
                     Debug.WriteLine("JsonPostTarget waiting for {0} posts to complete", poster.ActivePosts);
                     Thread.Sleep(1);
                 }
+
+                Debug.WriteLine("JsonPostTarget no active posts remaining");
 
             }, _poster);
 
@@ -198,6 +201,7 @@ namespace Gbase.NLog.JsonTarget
                     return logEvent.StackTrace;
                 case "level":
                     return logEvent.Level;
+                case "logger":
                 case "loggername":
                     return logEvent.LoggerName;
                 case "sequenceid":
